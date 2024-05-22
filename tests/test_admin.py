@@ -24,7 +24,7 @@ class GCMDeviceAdminTestCase(TestCase):
 		admin.message_user = mock.Mock()
 
 		with mock.patch(
-			"firebase_admin.messaging.send_all", return_value=responses.FCM_SUCCESS
+			"firebase_admin.messaging.send_each", return_value=responses.FCM_SUCCESS
 		) as p:
 			admin.send_messages(request, queryset, bulk=True)
 
@@ -61,7 +61,7 @@ class GCMDeviceAdminTestCase(TestCase):
 		admin.message_user = mock.Mock()
 
 		with mock.patch(
-			"firebase_admin.messaging.send_all", return_value=responses.FCM_SUCCESS
+			"firebase_admin.messaging.send_each", return_value=responses.FCM_SUCCESS
 		) as p:
 			admin.send_messages(request, queryset, bulk=False)
 
@@ -102,7 +102,7 @@ class GCMDeviceAdminTestCase(TestCase):
 		)
 
 		with mock.patch(
-			"firebase_admin.messaging.send_all", return_value=response
+			"firebase_admin.messaging.send_each", return_value=response
 		) as p:
 			admin.send_messages(request, queryset, bulk=True)
 
@@ -126,12 +126,7 @@ class GCMDeviceAdminTestCase(TestCase):
 			self.assertEqual(message.token, "abc")
 			self.assertEqual(message.android.notification.body, "Test bulk notification")
 
-			# 3.6 adds a `,` to the string representation of the exception
-			python_version = sys.version_info[:2]
-			if python_version >= (3, 7):
-				error_message = "Some messages could not be processed: UnregisteredError('error')"
-			else:
-				error_message = "Some messages could not be processed: UnregisteredError('error',)"
+			error_message = "Some messages could not be processed: UnregisteredError('error')"
 
 			admin.message_user.assert_called_once_with(
 				request, error_message, level=messages.ERROR
