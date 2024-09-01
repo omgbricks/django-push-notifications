@@ -3,7 +3,7 @@ import time
 from dataclasses import asdict, dataclass
 from typing import Awaitable, Callable, Dict, Optional, Union
 
-from aioapns import APNs, ConnectionError, NotificationRequest
+from aioapns import APNs, ConnectionError, NotificationRequest, PushType
 from aioapns.common import NotificationResult
 
 from . import models
@@ -156,8 +156,12 @@ class APNsService:
 		message_kwargs: dict = {},
 		notification_request_kwargs: dict = {},
 	):
+
+		push_type = PushType.ALERT
+
 		if alert is None:
 			alert = Alert(body="")
+			push_type = PushType.BACKGROUND
 
 		if loc_key:
 			if isinstance(alert, str):
@@ -168,6 +172,7 @@ class APNsService:
 			alert = alert.asDict()
 
 		notification_request_kwargs_out = notification_request_kwargs.copy()
+                notification_request_kwargs_out["push_type"] = push_type
 
 		if expiration is not None:
 			notification_request_kwargs_out["time_to_live"] = expiration - int(
