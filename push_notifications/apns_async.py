@@ -302,6 +302,7 @@ def apns_send_message(
 def apns_send_bulk_message(
 	registration_ids: list[str],
 	alert: Union[str, Alert],
+	content_available: int = 0,
 	application_id: str = None,
 	creds: Credentials = None,
 	topic: str = None,
@@ -347,6 +348,7 @@ def apns_send_bulk_message(
 			loc_key=loc_key,
 			priority=priority,
 			collapse_id=collapse_id,
+			aps_kwargs={'content-available': content_available}
 		)
 
 		result = apns_service.send_message(request)
