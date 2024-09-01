@@ -172,7 +172,7 @@ class APNsService:
 			alert = alert.asDict()
 
 		notification_request_kwargs_out = notification_request_kwargs.copy()
-                notification_request_kwargs_out["push_type"] = push_type
+		notification_request_kwargs_out["push_type"] = push_type
 
 		if expiration is not None:
 			notification_request_kwargs_out["time_to_live"] = expiration - int(
